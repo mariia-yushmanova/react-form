@@ -30,6 +30,7 @@ export const Form = () => {
   };
 
   return (
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     <form onSubmit={handleSubmit(onSubmit)}>
       <VStack spacing={4}>
         <FormControl isInvalid={!!errors.firstName}>
