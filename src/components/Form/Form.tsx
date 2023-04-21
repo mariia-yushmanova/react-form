@@ -9,55 +9,27 @@ import {
 } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { z } from "zod";
-
-const schema = z.object({
-  firstName: z
-    .string()
-    .min(2, "Имя должно содержать от 2 до 20 символов")
-    .max(20),
-  lastName: z
-    .string()
-    .min(2, "Фамилия должна содержать от 2 до 20 символов")
-    .max(20),
-  username: z
-    .string()
-    .min(2, "Логин должен содержать от 2 до 20 символов")
-    .max(20)
-    .regex(/^[a-zA-Z]+$/, "Логин должен состоять только из латинских символов"),
-  email: z.string().email("Введите корректный адрес электронной почты"),
-  privacyPolicy: z
-    .boolean()
-    .refine(
-      (value) => value === true,
-      "Вы должны принять политику конфиденциальности"
-    ),
-  // z.literal(true),
-  password: z
-    .string()
-    .min(2, "Имя должно содержать от 2 до 20 символов")
-    .max(20)
-    .refine(
-      (value) => /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{2,20}$/.test(value),
-      "Пароль должен содержать цифры, буквы и хотя бы одну заглавную букву"
-    ),
-});
-
-type FormData = z.TypeOf<typeof schema>;
+import { useUsers } from "~/hooks/useUsers";
+import { schema, type FormData } from "./schema";
 
 export const Form = () => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
 
-  const onSubmit: SubmitHandler<FormData> = (data) => console.log(data);
+  const { createUser } = useUsers();
+
+  const onSubmit: SubmitHandler<FormData> = (data) => {
+    void createUser.mutate(data);
+    reset();
+  };
 
   return (
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     <form onSubmit={handleSubmit(onSubmit)}>
       <VStack spacing={4}>
         <FormControl isInvalid={!!errors.firstName}>

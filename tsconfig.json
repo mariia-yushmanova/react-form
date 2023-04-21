@@ -28,6 +28,6 @@
     "**/*.tsx",
     "**/*.cjs",
     "**/*.mjs"
-  ],
+, "src/pages/api/users.ts", "src/hooks/useUsers.ts"  ],
   "exclude": ["node_modules"]
 }
